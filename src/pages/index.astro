@@ -1,0 +1,232 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { home } from '../data/home';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, home.recentPostsLimit);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main class="home">
+			<div class="intro">
+				<div class="portrait">
+					{
+						home.image.src ? (
+							<img src={home.image.src} alt={home.image.alt} width="240" height="240" />
+						) : (
+							<div class="portrait-placeholder" aria-hidden="true" />
+						)
+					}
+				</div>
+
+				<div class="bio">
+					{home.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+
+					<nav class="links" aria-label="Contact and profiles">
+						{
+							home.links.map((link, index) => (
+								<>
+									{index > 0 && <span class="sep" aria-hidden="true">|</span>}
+									<a href={link.href}>{link.label}</a>
+								</>
+							))
+						}
+					</nav>
+				</div>
+			</div>
+
+			<section class="recent">
+				<h2>recent posts.</h2>
+				<ul>
+					{
+						posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<span class="post-title">{post.data.title}</span>
+									<FormattedDate date={post.data.pubDate} />
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				<p class="see-more">
+					<a href="/blog">see more →</a>
+				</p>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.home {
+		padding-top: 2.5rem;
+		padding-bottom: 4rem;
+	}
+
+	.intro {
+		display: grid;
+		grid-template-columns: 240px 1fr;
+		gap: 2.5rem;
+		align-items: start;
+		margin-bottom: 3.5rem;
+	}
+
+	.portrait {
+		width: 240px;
+		aspect-ratio: 1 / 1;
+	}
+
+	.portrait img,
+	.portrait-placeholder {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		border-radius: 4px;
+	}
+
+	.portrait-placeholder {
+		background: color-mix(in srgb, var(--peach) 70%, var(--cream));
+		border: 1px solid color-mix(in srgb, var(--brown) 15%, transparent);
+	}
+
+	.bio {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.bio p {
+		margin: 0;
+		max-width: 52ch;
+		color: color-mix(in srgb, var(--brown) 85%, transparent);
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 0.75rem;
+		margin-top: 0.25rem;
+		font-size: 0.875rem;
+	}
+
+	.links a {
+		text-decoration: none;
+		color: var(--green);
+	}
+
+	.links a:hover {
+		color: var(--brown);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.sep {
+		color: color-mix(in srgb, var(--brown) 35%, transparent);
+		user-select: none;
+	}
+
+	.recent h2 {
+		margin: 0 0 1rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.recent ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.recent li {
+		border-top: 1px solid color-mix(in srgb, var(--brown) 12%, transparent);
+	}
+
+	.recent li:last-child {
+		border-bottom: 1px solid color-mix(in srgb, var(--brown) 12%, transparent);
+	}
+
+	.recent a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1.5rem;
+		padding: 0.875rem 0;
+		text-decoration: none;
+		color: var(--brown);
+		font-size: 0.875rem;
+	}
+
+	.recent a:hover .post-title {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.post-title {
+		font-weight: 500;
+	}
+
+	.recent time {
+		flex-shrink: 0;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.see-more {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+		margin: 0.75rem 0 0;
+		padding: 0;
+		font-size: 0.875rem;
+	}
+
+	.see-more a {
+		text-decoration: none;
+		color: var(--peach);
+		text-transform: lowercase;
+	}
+
+	.see-more a:hover {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	@media (max-width: 640px) {
+		.intro {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.portrait {
+			width: min(240px, 100%);
+		}
+
+		.recent a {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.25rem;
+		}
+	}
+</style>

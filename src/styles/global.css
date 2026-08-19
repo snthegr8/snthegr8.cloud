@@ -1,0 +1,126 @@
+@import '@fontsource-variable/geist-mono/wght.css';
+
+:root {
+	--green: #1e201e;
+	--cream: #ecdfcc;
+	--peach: #697565;
+	--brown: #3c3d37;
+	color-scheme: light;
+}
+
+[data-theme='dark'] {
+	--green: #ecdfcc;
+	--cream: #1e201e;
+	--peach: #8a9488;
+	--brown: #d4c8bc;
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Geist Mono Variable', monospace;
+	margin: 0;
+	padding: 0;
+	background: var(--cream);
+	color: var(--brown);
+	font-size: 16px;
+	line-height: 1.6;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+main {
+	width: 720px;
+	max-width: calc(100% - 2rem);
+	margin: 0 auto;
+	padding: 3rem 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 0.5rem;
+	color: var(--green);
+	line-height: 1.2;
+	font-weight: 600;
+}
+
+h1 {
+	font-size: 2rem;
+}
+
+a {
+	color: var(--green);
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+a:hover {
+	color: var(--brown);
+}
+
+p {
+	margin: 0 0 1rem;
+}
+
+code {
+	padding: 0.125rem 0.375rem;
+	background: var(--peach);
+	border-radius: 4px;
+	font-size: 0.875em;
+}
+
+pre {
+	padding: 1rem;
+	background: var(--peach);
+	border-radius: 8px;
+	overflow-x: auto;
+}
+
+pre > code {
+	padding: 0;
+	background: none;
+}
+
+blockquote {
+	border-left: 3px solid var(--green);
+	padding: 0 0 0 1rem;
+	margin: 0;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid color-mix(in srgb, var(--brown) 20%, transparent);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+	main {
+		padding: 2rem 1rem;
+	}
+}

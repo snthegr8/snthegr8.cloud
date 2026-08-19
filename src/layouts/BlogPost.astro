@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<article class="prose">
+				<header class="title">
+					<p class="date">
+						<FormattedDate date={pubDate} />
+						{
+							updatedDate && (
+								<span class="last-updated">
+									· updated <FormattedDate date={updatedDate} />
+								</span>
+							)
+						}
+					</p>
+					<h1>{title}</h1>
+				</header>
+				<slot />
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.prose {
+		max-width: 640px;
+	}
+
+	.title {
+		margin-bottom: 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid color-mix(in srgb, var(--brown) 15%, transparent);
+	}
+
+	.title h1 {
+		margin: 0;
+	}
+
+	.date {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 60%, transparent);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.last-updated {
+		font-style: normal;
+	}
+</style>

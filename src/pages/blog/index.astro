@@ -1,0 +1,116 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const postsByYear = posts.reduce<Map<number, typeof posts>>((groups, post) => {
+	const year = post.data.pubDate.getFullYear();
+	const yearPosts = groups.get(year) ?? [];
+	yearPosts.push(post);
+	groups.set(year, yearPosts);
+	return groups;
+}, new Map());
+
+const years = [...postsByYear.keys()].sort((a, b) => b - a);
+
+const formatPostDate = (date: Date) =>
+	date.toLocaleDateString('en-us', { month: 'short', day: 'numeric' });
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main class="blog">
+			{
+				years.map((year) => (
+					<section class="year-group">
+						<h2>{year}</h2>
+						<ul class="posts">
+							{postsByYear.get(year)!.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										<span class="post-title">{post.data.title}</span>
+										<time datetime={post.data.pubDate.toISOString()}>
+											{formatPostDate(post.data.pubDate)}
+										</time>
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.blog {
+		padding-top: 2.5rem;
+	}
+
+	.year-group + .year-group {
+		margin-top: 2.5rem;
+	}
+
+	.year-group h2 {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.posts {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.posts li {
+		border-bottom: 1px solid color-mix(in srgb, var(--brown) 12%, transparent);
+	}
+
+	.posts li:first-child {
+		border-top: 1px solid color-mix(in srgb, var(--brown) 12%, transparent);
+	}
+
+	.posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 1rem 0;
+		text-decoration: none;
+		color: var(--brown);
+		font-size: 0.875rem;
+	}
+
+	.posts a:hover .post-title {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.post-title {
+		font-weight: 500;
+	}
+
+	.posts time {
+		flex-shrink: 0;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+</style>

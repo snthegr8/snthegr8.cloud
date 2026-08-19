@@ -1,0 +1,85 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer>
+	<p>
+  &copy; {year} <b>snthegr8</b> &verbar; <a href="/rss.xml">rss</a> &verbar;&nbsp;
+		<button type="button" class="theme-toggle" aria-label="Toggle color theme">
+			<span class="theme-toggle__label">dark</span>
+		</button>
+	</p>
+	<p>
+		Source code is available at
+		<a href="https://github.com/snthegr8/snthegr8.cloud.git">github.com/snthegr8/snthegr8.cloud</a>
+	</p>
+</footer>
+
+<script>
+	const storageKey = 'theme';
+	const root = document.documentElement;
+	const toggle = document.querySelector('.theme-toggle');
+	const label = document.querySelector('.theme-toggle__label');
+
+	const getTheme = () => (root.dataset.theme === 'dark' ? 'dark' : 'light');
+
+	const setTheme = (theme: 'light' | 'dark') => {
+		root.dataset.theme = theme;
+		localStorage.setItem(storageKey, theme);
+		if (label) label.textContent = theme === 'dark' ? 'light mode' : 'dark mode';
+	};
+
+	const initTheme = () => {
+		if (label) label.textContent = getTheme() === 'dark' ? 'light mode' : 'dark mode';
+	};
+
+	initTheme();
+
+	toggle?.addEventListener('click', () => {
+		setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+	});
+</script>
+
+<style>
+	footer {
+		padding: 2rem 1rem 4rem;
+		text-align: center;
+		color: color-mix(in srgb, var(--brown) 60%, transparent);
+		font-size: 0.75rem;
+	}
+
+	footer p {
+		margin: 0;
+	}
+
+	footer p + p {
+		margin-top: 0.5rem;
+	}
+
+	footer a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	footer a:hover {
+		color: var(--green);
+	}
+
+	.theme-toggle {
+		display: inline;
+		padding: 0;
+		border: none;
+		background: none;
+		font: inherit;
+		color: inherit;
+		text-transform: lowercase;
+		cursor: pointer;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.theme-toggle:hover {
+		color: var(--green);
+	}
+</style>

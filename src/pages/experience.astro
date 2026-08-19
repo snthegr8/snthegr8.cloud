@@ -1,0 +1,148 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+import { experience } from '../data/experience';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Experience · ${SITE_TITLE}`}
+			description="Work experience and resume."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="experience">
+			<p class="back">
+				<a href="/">← Go back.</a>
+			</p>
+
+			<ol class="timeline">
+				{
+					experience.map((entry) => (
+						<li>
+							<p class="period">{entry.period}</p>
+							<h2>
+								{entry.company}
+								<span class="sep"> — </span>
+								{entry.role}
+							</h2>
+							{entry.summary && <p class="summary">{entry.summary}</p>}
+							{
+								entry.skills && entry.skills.length > 0 && (
+									<ul class="skills">
+										{entry.skills.map((skill) => (
+											<li>{skill}</li>
+										))}
+									</ul>
+								)
+							}
+						</li>
+					))
+				}
+			</ol>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.experience {
+		padding-top: 2.5rem;
+		padding-bottom: 4rem;
+	}
+
+	.back {
+		margin: 0 0 2.5rem;
+		font-size: 0.875rem;
+	}
+
+	.back a {
+		text-decoration: none;
+		color: color-mix(in srgb, var(--brown) 70%, transparent);
+	}
+
+	.back a:hover {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.timeline {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.timeline > li {
+		padding: 0 0 2rem 1.25rem;
+		border-left: 1px solid color-mix(in srgb, var(--brown) 18%, transparent);
+		position: relative;
+	}
+
+	.timeline > li::before {
+		content: '';
+		position: absolute;
+		left: -4px;
+		top: 0.35rem;
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--peach);
+	}
+
+	.timeline > li:last-child {
+		padding-bottom: 0;
+	}
+
+	.period {
+		margin: 0 0 0.375rem;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--green);
+		line-height: 1.4;
+	}
+
+	.sep {
+		font-weight: 400;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
+	}
+
+	.summary {
+		margin: 0 0 0.875rem;
+		max-width: 58ch;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		color: color-mix(in srgb, var(--brown) 85%, transparent);
+	}
+
+	.skills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.skills li {
+		padding: 0.125rem 0.5rem;
+		font-size: 0.75rem;
+		color: var(--brown);
+		background: color-mix(in srgb, var(--peach) 14%, var(--cream));
+		border: 1px solid color-mix(in srgb, var(--brown) 10%, transparent);
+		border-radius: 4px;
+	}
+</style>
