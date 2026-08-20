@@ -9,14 +9,16 @@ export const home = {
     alt: 'Somtochukwu Nnalue',
   },
   paragraphs: [
-    "I'm Somtochukwu Nnalue, Leroy to most people. I live in Lagos and build software at Anamen Limited.",
-    "I love riding my bicycle, Achilles. Grateful to be human inspired by greats, I live to serve, actively in search of a course. Building @ Alvinn",
+    "Hi there,",
+    "I'm Somtochukwu Nnalue, Leroy to most people. Software engineer based in Lagos, Nigeria. Building software at Anamen.",
   ],
   links: [
     { label: 'Experience', href: '/experience' },
     { label: 'Github', href: 'https://github.com/snthegr8' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/somtonnalue' },
-    { label: 'Email Me', href: 'mailto:hello@snthegr8.cloud' },
+    // { label: 'Tools', href: 'https://linkedin.com/in/somtonnalue' },
+    // { label: 'Photography', href: '/photography' },
+    { label: 'Email Me', href: 'mailto:snthegr8@icloud.com' },
   ] satisfies HomeLink[],
   recentPostsLimit: 3,
 };

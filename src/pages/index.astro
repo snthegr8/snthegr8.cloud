@@ -24,7 +24,7 @@ const posts = (await getCollection('blog'))
 				<div class="portrait">
 					{
 						home.image.src ? (
-							<img src={home.image.src} alt={home.image.alt} width="240" height="240" />
+							<img src={home.image.src} alt={home.image.alt} width="60" height="60" />
 						) : (
 							<div class="portrait-placeholder" aria-hidden="true" />
 						)
@@ -78,14 +78,14 @@ const posts = (await getCollection('blog'))
 
 	.intro {
 		display: grid;
-		grid-template-columns: 240px 1fr;
+		grid-template-columns: 60px 1fr;
 		gap: 2.5rem;
 		align-items: start;
 		margin-bottom: 3.5rem;
 	}
 
 	.portrait {
-		width: 240px;
+		width: 60px;
 		aspect-ratio: 1 / 1;
 	}
 
@@ -111,7 +111,7 @@ const posts = (await getCollection('blog'))
 
 	.bio p {
 		margin: 0;
-		max-width: 52ch;
+		max-width: 72ch;
 		color: color-mix(in srgb, var(--brown) 85%, transparent);
 		font-size: 0.9375rem;
 		line-height: 1.7;
@@ -220,7 +220,7 @@ const posts = (await getCollection('blog'))
 		}
 
 		.portrait {
-			width: min(240px, 100%);
+			width: min(120px, 100%);
 		}
 
 		.recent a {
