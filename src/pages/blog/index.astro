@@ -26,7 +26,11 @@ const formatPostDate = (date: Date) =>
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<BaseHead
+			title={`Blog · ${SITE_TITLE}`}
+			description={SITE_DESCRIPTION}
+			image="/og/blog.png"
+		/>
 	</head>
 	<body>
 		<Header />

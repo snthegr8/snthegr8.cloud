@@ -1,2 +1,2 @@
-export const SITE_TITLE = 'Somtochukwu Nnalue';
-export const SITE_DESCRIPTION = 'Personal site and blog.';
+export const SITE_TITLE = 'Somtochukwu N.';
+export const SITE_DESCRIPTION = 'You know I just ... *do* things. Mostly software and learning to be a better human.';
