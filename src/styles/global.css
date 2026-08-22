@@ -104,6 +104,10 @@ img {
 	height: auto;
 }
 
+main img {
+	cursor: zoom-in;
+}
+
 .sr-only {
 	border: 0;
 	padding: 0;

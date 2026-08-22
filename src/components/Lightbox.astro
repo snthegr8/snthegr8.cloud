@@ -1,0 +1,87 @@
+<dialog class="lightbox" aria-label="Image preview">
+	<img alt="" />
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('.lightbox');
+	const preview = dialog?.querySelector('img');
+
+	if (dialog && preview) {
+		const open = (img: HTMLImageElement) => {
+			preview.src = img.currentSrc || img.src;
+			preview.alt = img.alt || '';
+			dialog.showModal();
+		};
+
+		const close = () => {
+			if (dialog.open) dialog.close();
+		};
+
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLImageElement)) return;
+			if (!target.closest('main')) return;
+			if (target.closest('a')) return;
+			if (target.closest('.lightbox')) return;
+			event.preventDefault();
+			open(target);
+		});
+
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog || event.target === preview) close();
+		});
+
+		dialog.addEventListener('close', () => {
+			preview.removeAttribute('src');
+			preview.alt = '';
+		});
+	}
+</script>
+
+<style>
+	.lightbox {
+		width: 100%;
+		height: 100%;
+		max-width: 100vw;
+		max-height: 100vh;
+		margin: 0;
+		padding: 1.5rem;
+		border: none;
+		outline: none;
+		background: transparent;
+		box-shadow: none;
+		/* Must not override closed dialog's display:none or it blocks the page */
+		display: none;
+	}
+
+	.lightbox[open] {
+		display: grid;
+		place-items: center;
+		animation: lightbox-in 160ms ease-out;
+	}
+
+	.lightbox::backdrop {
+		background: rgb(0 0 0 / 0.9);
+	}
+
+	.lightbox img {
+		display: block;
+		max-width: min(92vw, 960px);
+		max-height: 90vh;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: 4px;
+		cursor: zoom-out;
+		box-shadow: none;
+	}
+
+	@keyframes lightbox-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+</style>
