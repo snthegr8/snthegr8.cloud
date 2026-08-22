@@ -6,7 +6,7 @@ description: 'how i stopped procasting, and took Achilles on an adventure'
 
 I picked up my helmet like I had done consistently for the past week, every day, with the hope of taking Achilles, my mountain bike, outside the estate for a ride.
 
-For days, whenever my roommate Jordan was home, I claimed I was going to take my bike outside. Somehow, I always failed to.
+For days, whenever my roommate was home, I claimed I was going to take my bike outside. Somehow, I always failed to.
 
 But today felt different.
 
