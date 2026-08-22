@@ -13,6 +13,13 @@ const pages = Object.fromEntries([
 		},
 	],
 	[
+		'notes',
+		{
+			title: 'notes',
+			description: 'short thoughts',
+		},
+	],
+	[
 		'experience',
 		{
 			title: 'experience',
