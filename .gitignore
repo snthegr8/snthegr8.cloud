@@ -28,5 +28,5 @@ madre.mdx
 lost.mdx
 
 # personal notes (local only)
-src/content/notes/*
-!src/content/notes/.gitkeep
+# src/content/notes/*
+# !src/content/notes/.gitkeep
