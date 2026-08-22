@@ -1,7 +1,7 @@
 ---
 title: 'achilles on hills'
 pubDate: '2026-08-22'
-description: 'A week of hesitation, a mountain bike named Achilles, sandy roads, missed turns, barking dogs, and the decision to finally ride.'
+description: 'how i stopped procasting, and took Achilles on an adventure'
 ---
 
 I picked up my helmet like I had done consistently for the past week, every day, with the hope of taking Achilles, my mountain bike, outside the estate for a ride.
