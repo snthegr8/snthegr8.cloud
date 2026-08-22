@@ -1,0 +1,1 @@
+Yeah, I wonder how long until Nigerians get dedicated bike lanes. I tried out a route generated on [Lagyle](https://github.com/snthegr8/lagyle), and it was so bumpy and sandy, no roadie would have a good time taking that route. Luckily, my tyre didn't go flat despite the high PSI.
