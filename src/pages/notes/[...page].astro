@@ -44,6 +44,8 @@ const pageLabel =
 		<main class="notes">
 			<h1>notes.</h1>
 
+			<p class="disclaimer">You are viewing a note. This page may change often.</p>
+
 			{
 				notes.length === 0 ? (
 					<p class="empty">No notes yet.</p>
@@ -85,12 +87,22 @@ const pageLabel =
 	}
 
 	h1 {
-		margin: 0 0 2rem;
+		margin: 0 0 1rem;
 		font-size: 0.75rem;
 		font-weight: 500;
 		letter-spacing: 0.08em;
 		text-transform: lowercase;
 		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.disclaimer {
+		margin: 0 0 2rem;
+		padding-left: 0.875rem;
+		border-left: 2px solid color-mix(in srgb, var(--brown) 20%, transparent);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+		font-style: italic;
+		color: color-mix(in srgb, var(--brown) 60%, transparent);
 	}
 
 	.empty {
