@@ -1,0 +1,21 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import LinkPost from '../../layouts/LinkPost.astro';
+
+export async function getStaticPaths() {
+	const links = await getCollection('links');
+	return links.map((link) => ({
+		params: { slug: link.id },
+		props: link,
+	}));
+}
+type Props = CollectionEntry<'links'>;
+
+const link = Astro.props;
+const { Content } = await render(link);
+const hasThoughts = Boolean(link.body?.trim());
+---
+
+<LinkPost {...link.data} slug={link.id} hasThoughts={hasThoughts}>
+	{hasThoughts && <Content />}
+</LinkPost>

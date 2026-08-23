@@ -1,0 +1,124 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+
+type Props = CollectionEntry<'links'>['data'] & {
+	slug: string;
+	hasThoughts: boolean;
+};
+
+const { title, author, url, summary, pubDate, slug, hasThoughts } = Astro.props;
+const heading = `${title} by ${author}`;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={heading} description={summary} image={`/og/links/${slug}.png`} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<article class="link-post">
+				<header class="title">
+					<p class="date">
+						<FormattedDate date={pubDate} />
+					</p>
+					<h1>{heading}</h1>
+				</header>
+
+				<section class="summary">
+					<p>{summary}</p>
+					<p class="read-more">
+						<a href={url} target="_blank" rel="noopener noreferrer">Read more</a>
+					</p>
+				</section>
+
+				{
+					hasThoughts && (
+						<section class="thoughts">
+							<slot />
+						</section>
+					)
+				}
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.link-post {
+		max-width: 640px;
+		padding-top: 0.5rem;
+		padding-bottom: 4rem;
+	}
+
+	.title {
+		margin-bottom: 1.5rem;
+	}
+
+	.title h1 {
+		margin: 0;
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	.date {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 60%, transparent);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.summary p {
+		margin: 0;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		color: color-mix(in srgb, var(--brown) 90%, transparent);
+	}
+
+	.read-more {
+		margin-top: 0.75rem !important;
+	}
+
+	.read-more a {
+		color: var(--peach);
+		text-decoration: none;
+		text-transform: lowercase;
+		font-size: 0.875rem;
+	}
+
+	.read-more a:hover {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.thoughts {
+		margin-top: 2rem;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		color: color-mix(in srgb, var(--brown) 90%, transparent);
+	}
+
+	.thoughts :global(p) {
+		margin: 0 0 0.75rem;
+	}
+
+	.thoughts :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.thoughts :global(a) {
+		color: var(--peach);
+	}
+
+	.thoughts :global(a:hover) {
+		color: var(--green);
+	}
+</style>

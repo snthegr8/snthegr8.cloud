@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const links = (await getCollection('links')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const formatLinkDate = (date: Date) =>
+	date.toLocaleDateString('en-us', { month: 'short', day: 'numeric' });
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Links · ${SITE_TITLE}`}
+			description={SITE_DESCRIPTION}
+			image="/og/links.png"
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="links">
+			<h1>links.</h1>
+
+			{
+				links.length === 0 ? (
+					<p class="empty">No links yet.</p>
+				) : (
+					<ul class="feed">
+						{links.map((link) => (
+							<li>
+								<a href={`/links/${link.id}/`}>
+									<span class="link-heading">
+										{link.data.title} by {link.data.author}
+									</span>
+									<span class="link-preview">
+										{link.data.preview ?? link.data.summary}
+									</span>
+									<time datetime={link.data.pubDate.toISOString()}>
+										{formatLinkDate(link.data.pubDate)}
+									</time>
+								</a>
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.links {
+		padding-top: 2.5rem;
+		padding-bottom: 4rem;
+	}
+
+	h1 {
+		margin: 0 0 2rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.empty {
+		margin: 0;
+		font-size: 0.9375rem;
+		color: color-mix(in srgb, var(--brown) 70%, transparent);
+	}
+
+	.feed {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.feed li + li {
+		margin-top: 1.5rem;
+	}
+
+	.feed a {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto auto;
+		gap: 0.35rem 1rem;
+		text-decoration: none;
+		color: var(--brown);
+	}
+
+	.feed a:hover .link-heading {
+		color: var(--green);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.link-heading {
+		grid-column: 1;
+		grid-row: 1;
+		font-size: 0.875rem;
+		font-weight: 500;
+	}
+
+	.link-preview {
+		grid-column: 1;
+		grid-row: 2;
+		font-size: 0.8125rem;
+		line-height: 1.5;
+		color: color-mix(in srgb, var(--brown) 65%, transparent);
+	}
+
+	.feed time {
+		grid-column: 2;
+		grid-row: 1;
+		align-self: baseline;
+		flex-shrink: 0;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+</style>
