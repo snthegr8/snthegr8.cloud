@@ -21,5 +21,5 @@ export const home = {
     // { label: 'Photography', href: '/photography' },
     { label: 'Email Me', href: 'mailto:snthegr8@icloud.com' },
   ] satisfies HomeLink[],
-  recentPostsLimit: 3,
+  recentPostsLimit: 4,
 };
