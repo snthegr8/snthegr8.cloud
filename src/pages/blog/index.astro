@@ -43,7 +43,16 @@ const formatPostDate = (date: Date) =>
 							{postsByYear.get(year)!.map((post) => (
 								<li>
 									<a href={`/blog/${post.id}/`}>
-										<span class="post-title">{post.data.title}</span>
+										<span class="post-main">
+											<span class="post-title">{post.data.title}</span>
+											{post.data.tags.length > 0 && (
+												<span class="post-tags">
+													{post.data.tags.map((tag) => (
+														<span class="post-tag">{tag}</span>
+													))}
+												</span>
+											)}
+										</span>
 										<time datetime={post.data.pubDate.toISOString()}>
 											{formatPostDate(post.data.pubDate)}
 										</time>
@@ -108,8 +117,29 @@ const formatPostDate = (date: Date) =>
 		text-underline-offset: 0.2em;
 	}
 
+	.post-main {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.35rem 0.75rem;
+		min-width: 0;
+	}
+
 	.post-title {
 		font-weight: 500;
+	}
+
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 0.5rem;
+	}
+
+	.post-tag {
+		font-size: 0.6875rem;
+		letter-spacing: 0.04em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
 	}
 
 	.posts time {

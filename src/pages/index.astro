@@ -7,9 +7,21 @@ import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { home } from '../data/home';
 
-const posts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+const allPosts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const isPersonal = (tags: string[]) => tags.includes('personal');
+
+const professionalPosts = allPosts
+	.filter((post) => !isPersonal(post.data.tags))
 	.slice(0, home.recentPostsLimit);
+
+const personalPosts = allPosts
+	.filter((post) => isPersonal(post.data.tags))
+	.slice(0, home.recentPostsLimit);
+
+const hasPersonal = personalPosts.length > 0;
 ---
 
 <!doctype html>
@@ -47,26 +59,95 @@ const posts = (await getCollection('blog'))
 				</div>
 			</div>
 
-			<section class="recent">
-				<h2>recent posts.</h2>
-				<ul>
+			<section class="recent" data-recent>
+				<div class="recent-header">
+					<h2>recent posts.</h2>
 					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									<span class="post-title">{post.data.title}</span>
-									<FormattedDate date={post.data.pubDate} />
-								</a>
-							</li>
-						))
+						hasPersonal && (
+							<div class="tag-filters" role="group" aria-label="Filter posts by tag">
+								<button type="button" class="tag is-active" data-filter="default" aria-pressed="true">
+									writing
+								</button>
+								<button type="button" class="tag" data-filter="personal" aria-pressed="false">
+									personal
+								</button>
+							</div>
+						)
+					}
+				</div>
+
+				<ul data-list="default">
+					{
+						professionalPosts.length === 0 ? (
+							<li class="empty">No posts yet.</li>
+						) : (
+							professionalPosts.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										<span class="post-title">{post.data.title}</span>
+										<FormattedDate date={post.data.pubDate} />
+									</a>
+								</li>
+							))
+						)
 					}
 				</ul>
+
+				{
+					hasPersonal && (
+						<ul data-list="personal" hidden>
+							{personalPosts.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										<span class="post-title">{post.data.title}</span>
+										<span class="post-tag">personal</span>
+										<FormattedDate date={post.data.pubDate} />
+									</a>
+								</li>
+							))}
+						</ul>
+					)
+				}
+
 				<p class="see-more">
 					<a href="/blog">see more →</a>
 				</p>
 			</section>
 		</main>
 		<Footer />
+
+		{
+			hasPersonal && (
+				<script>
+					const root = document.querySelector('[data-recent]');
+					if (root) {
+						const buttons = root.querySelectorAll('[data-filter]');
+						const lists = {
+							default: root.querySelector('[data-list="default"]'),
+							personal: root.querySelector('[data-list="personal"]'),
+						};
+
+						buttons.forEach((button) => {
+							button.addEventListener('click', () => {
+								const filter = button.getAttribute('data-filter');
+								if (!filter || !(filter in lists)) return;
+
+								buttons.forEach((b) => {
+									const active = b === button;
+									b.classList.toggle('is-active', active);
+									b.setAttribute('aria-pressed', String(active));
+								});
+
+								Object.entries(lists).forEach(([key, list]) => {
+									if (!list) return;
+									list.hidden = key !== filter;
+								});
+							});
+						});
+					}
+				</script>
+			)
+		}
 	</body>
 </html>
 
@@ -146,13 +227,51 @@ const posts = (await getCollection('blog'))
 		user-select: none;
 	}
 
+	.recent-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
 	.recent h2 {
-		margin: 0 0 1rem;
+		margin: 0;
 		font-size: 0.75rem;
 		font-weight: 500;
 		letter-spacing: 0.08em;
 		text-transform: lowercase;
 		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.tag-filters {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.tag {
+		appearance: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
+		cursor: pointer;
+	}
+
+	.tag:hover {
+		color: var(--green);
+	}
+
+	.tag.is-active {
+		color: var(--peach);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 
 	.recent ul {
@@ -169,11 +288,18 @@ const posts = (await getCollection('blog'))
 		border-bottom: 1px solid color-mix(in srgb, var(--brown) 12%, transparent);
 	}
 
+	.recent .empty {
+		padding: 0.875rem 0;
+		font-size: 0.875rem;
+		color: color-mix(in srgb, var(--brown) 60%, transparent);
+		border: 0;
+	}
+
 	.recent a {
 		display: flex;
 		justify-content: space-between;
 		align-items: baseline;
-		gap: 1.5rem;
+		gap: 1rem;
 		padding: 0.875rem 0;
 		text-decoration: none;
 		color: var(--brown);
@@ -188,6 +314,16 @@ const posts = (await getCollection('blog'))
 
 	.post-title {
 		font-weight: 500;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.post-tag {
+		flex-shrink: 0;
+		font-size: 0.6875rem;
+		letter-spacing: 0.04em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
 	}
 
 	.recent time {
@@ -227,10 +363,19 @@ const posts = (await getCollection('blog'))
 			width: min(120px, 100%);
 		}
 
-		.recent a {
+		.recent-header {
 			flex-direction: column;
 			align-items: flex-start;
-			gap: 0.25rem;
+			gap: 0.75rem;
+		}
+
+		.recent a {
+			flex-wrap: wrap;
+			gap: 0.25rem 0.75rem;
+		}
+
+		.recent time {
+			width: 100%;
 		}
 	}
 </style>

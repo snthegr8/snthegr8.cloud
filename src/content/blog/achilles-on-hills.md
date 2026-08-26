@@ -2,6 +2,7 @@
 title: 'achilles on hills'
 pubDate: '2026-08-22'
 description: 'how i stopped procasting, and took Achilles on an adventure'
+tags: ['personal']
 ---
 
 I picked up my helmet like I had done consistently for the past week, every day, with the hope of taking Achilles, my mountain bike, outside the estate for a ride.
