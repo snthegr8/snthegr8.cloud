@@ -15,6 +15,23 @@
 		opacity: 0.42;
 	}
 
+	.bicycle-park-hit {
+		position: fixed;
+		width: 6.5rem;
+		height: 4.25rem;
+		z-index: 4;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: none;
+		pointer-events: none;
+		appearance: none;
+	}
+
+	.bicycle-park-hit.is-on {
+		pointer-events: auto;
+	}
+
 	body > header,
 	body > main,
 	body > footer {
@@ -23,7 +40,8 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.bicycle-canvas {
+		.bicycle-canvas,
+		.bicycle-park-hit {
 			display: none;
 		}
 	}

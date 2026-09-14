@@ -1,7 +1,7 @@
 type Listener = () => void;
 
 let speaking = false;
-/** False until Mollie has finished, skipped this visit, or is disabled (reduced motion). */
+/** False until Mollie has finished, skipped this visit, or is disabled (mobile / reduced motion). */
 let sessionDone = false;
 const speakingListeners = new Set<(speaking: boolean) => void>();
 const sessionListeners = new Set<Listener>();

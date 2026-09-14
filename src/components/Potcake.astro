@@ -94,8 +94,10 @@
 		perspective: 700px;
 	}
 
-	.mollie:not([hidden]) {
-		display: block;
+	@media (min-width: 960px) {
+		.mollie:not([hidden]) {
+			display: block;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -229,28 +231,10 @@
 		left: 50%;
 		bottom: 100%;
 		width: max-content;
-		max-width: min(11.5rem, 68vw);
+		max-width: 11.5rem;
 		transform: translate(-50%, -0.35rem);
 		opacity: 0;
 		pointer-events: none;
-	}
-
-	@media (max-width: 959px) {
-		.mollie__actor {
-			width: 84px;
-			height: 64px;
-			bottom: 1.1rem;
-		}
-
-		.mollie__svg.mollie__side {
-			width: 84px;
-			height: 56px;
-		}
-
-		.mollie__svg.mollie__front {
-			width: 72px;
-			height: 64px;
-		}
 	}
 
 	.mollie__chat.is-open {
@@ -370,15 +354,12 @@
 	import gsap from 'gsap';
 	import { completeMollieSession, setMollieSpeaking } from '../lib/mollie-signal';
 
+	const DESKTOP_MQ = '(min-width: 960px)';
 	const CONTENT_MAX = 720;
 	const CONTENT_GUTTER = 16;
 	const EDGE_GAP = 28;
-	const CORNER_PAD = 20;
-	const DOG_W_DESKTOP = 104;
-	const DOG_W_MOBILE = 84;
-	const NARROW_MQ = '(max-width: 959px)';
-
-	const dogWidth = () => (window.matchMedia(NARROW_MQ).matches ? DOG_W_MOBILE : DOG_W_DESKTOP);
+	const CORNER_PAD = 28;
+	const DOG_W = 104;
 	const STORAGE_KEY = 'mollie-met';
 	const LAST_SCRIPT_KEY = 'mollie-last-script';
 	/** Returning visitors see Mollie about 2 in 5 page loads. */
@@ -402,7 +383,6 @@
 		['hi again.', 'sn says the site is “almost done.”', 'he said that yesterday too.'],
 		['you returned.', 'brave.', 'or bored. either works.'],
     ['meow ! yea i know i am a dog, please allow', "there's leftover coffee energy in the room.", 'steal some via email.'],
-		['oh good.', 'i was talking to the cursor.', 'it never answers. you might.'],
     ['again?', 'i approve.', 'send sn a tiny hello, he pretends not to check mail.'],
 		['hey stranger.', 'jk. i remember you.', 'sn probably does too. wave at him.'],
 		['you found your way back.', 'impressive navigation.', 'or muscle memory. still cool.'],
@@ -447,6 +427,7 @@
 	const echo = document.querySelector<HTMLElement>('[data-mollie-echo]');
 
 	if (root && actor && turn && runFace && chat && bubble && puff && echo) {
+		const desktop = window.matchMedia(DESKTOP_MQ);
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		let startTimer = 0;
 		let echoTimer = 0;
@@ -473,19 +454,6 @@
 			const contentWidth = Math.min(CONTENT_MAX, window.innerWidth - CONTENT_GUTTER * 2);
 			const left = (window.innerWidth - contentWidth) / 2;
 			return { left, right: left + contentWidth };
-		};
-
-		/** Beside the column when there's gutter; otherwise inset from the screen edge. */
-		const parkX = (side: 'left' | 'right') => {
-			const w = dogWidth();
-			const { left, right } = contentEdges();
-			const need = w + EDGE_GAP + 8;
-			if (side === 'right') {
-				const gutter = window.innerWidth - right;
-				return gutter >= need ? right + EDGE_GAP : window.innerWidth - w - CORNER_PAD;
-			}
-			const gutter = left;
-			return gutter >= need ? left - EDGE_GAP - w : CORNER_PAD;
 		};
 
 		const resetPose = () => {
@@ -537,7 +505,7 @@
 		const scheduleEcho = () => {
 			window.clearTimeout(echoTimer);
 			echoTimer = window.setTimeout(() => {
-				if (reduceMotion.matches) return;
+				if (!desktop.matches || reduceMotion.matches) return;
 				const pad = 48;
 				const x = pad + Math.random() * Math.max(80, window.innerWidth - pad * 2 - 120);
 				const y = pad + Math.random() * Math.max(80, window.innerHeight - pad * 2 - 40);
@@ -562,8 +530,9 @@
 		};
 
 		const runConversation = () => {
-			if (reduceMotion.matches) {
+			if (!desktop.matches || reduceMotion.matches) {
 				stopAll();
+				completeMollieSession();
 				return;
 			}
 
@@ -575,13 +544,13 @@
 			}
 
 			const lines = returning ? pickReturnScript() : FIRST_LINES;
-			const w = dogWidth();
 
 			root.hidden = false;
 			setMollieSpeaking(true);
 			const side: 'left' | 'right' = Math.random() > 0.45 ? 'right' : 'left';
-			const startX = side === 'right' ? window.innerWidth + 8 : -w - 8;
-			const stopX = parkX(side);
+			const { left, right } = contentEdges();
+			const startX = side === 'right' ? window.innerWidth + 8 : -DOG_W - 8;
+			const stopX = side === 'right' ? right + EDGE_GAP : left - EDGE_GAP - DOG_W;
 			const movingLeft = stopX < startX;
 
 			resetPose();
@@ -656,7 +625,7 @@
 		};
 
 		const sync = () => {
-			if (reduceMotion.matches) {
+			if (!desktop.matches || reduceMotion.matches) {
 				stopAll();
 				completeMollieSession();
 				started = false;
@@ -667,6 +636,7 @@
 			startTimer = window.setTimeout(() => runConversation(), 2200 + Math.random() * 1600);
 		};
 
+		desktop.addEventListener('change', sync);
 		reduceMotion.addEventListener('change', sync);
 		sync();
 	} else {
