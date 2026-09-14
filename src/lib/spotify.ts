@@ -142,23 +142,27 @@ export const getNowPlaying = async (): Promise<NowPlaying> => {
 		return { isPlaying: false, progressMs: null, durationMs: null, track: null };
 	}
 
-	const data = await spotifyFetch<{
-		is_playing?: boolean;
-		progress_ms?: number;
-		item?: RawTrack | null;
-		currently_playing_type?: string;
-	}>('/me/player/currently-playing', config);
+	try {
+		const data = await spotifyFetch<{
+			is_playing?: boolean;
+			progress_ms?: number;
+			item?: RawTrack | null;
+			currently_playing_type?: string;
+		}>('/me/player/currently-playing', config);
 
-	if (!data?.item || data.currently_playing_type === 'episode') {
+		if (!data?.item || data.currently_playing_type === 'episode') {
+			return { isPlaying: false, progressMs: null, durationMs: null, track: null };
+		}
+
+		return {
+			isPlaying: Boolean(data.is_playing),
+			progressMs: data.progress_ms ?? null,
+			durationMs: data.item.duration_ms ?? null,
+			track: mapTrack(data.item),
+		};
+	} catch {
 		return { isPlaying: false, progressMs: null, durationMs: null, track: null };
 	}
-
-	return {
-		isPlaying: Boolean(data.is_playing),
-		progressMs: data.progress_ms ?? null,
-		durationMs: data.item.duration_ms ?? null,
-		track: mapTrack(data.item),
-	};
 };
 
 const getTopTracks = async (config: SpotifyConfig, timeRange: string, limit: number) => {
@@ -218,17 +222,21 @@ export const getSpotifyStats = async (): Promise<SpotifyStats> => {
 	const config = getConfig();
 	if (!config) return empty;
 
-	const [artistsData, yearTracks, recentTracks] = await Promise.all([
-		spotifyFetch<{ items: RawArtist[] }>('/me/top/artists?time_range=medium_term&limit=5', config),
-		getTopTracks(config, 'medium_term', 20),
-		getTopTracks(config, 'short_term', 5),
-	]);
+	try {
+		const [artistsData, yearTracks, recentTracks] = await Promise.all([
+			spotifyFetch<{ items: RawArtist[] }>('/me/top/artists?time_range=medium_term&limit=5', config),
+			getTopTracks(config, 'medium_term', 20),
+			getTopTracks(config, 'short_term', 5),
+		]);
 
-	return {
-		configured: true,
-		artists: (artistsData?.items ?? []).map(mapArtist),
-		topAlbum: deriveTopAlbum(yearTracks),
-		onRepeat: recentTracks[0] ? mapTrack(recentTracks[0]) : null,
-		year,
-	};
+		return {
+			configured: true,
+			artists: (artistsData?.items ?? []).map(mapArtist),
+			topAlbum: deriveTopAlbum(yearTracks),
+			onRepeat: recentTracks[0] ? mapTrack(recentTracks[0]) : null,
+			year,
+		};
+	} catch {
+		return { ...empty, configured: true };
+	}
 };

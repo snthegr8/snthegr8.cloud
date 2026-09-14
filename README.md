@@ -22,4 +22,4 @@ The home intro can show currently listening, top artists, top album, and on-repe
 4. Run `pnpm spotify:token`, approve access, paste the refresh token into `.env`
 5. Restart `pnpm dev`
 
-Live now-playing hits `/api/spotify/now-playing` (Node adapter). Deploy somewhere that can run the Astro Node server, or swap `@astrojs/node` for your host’s adapter.
+Live now-playing hits `/api/spotify/now-playing` (Vercel adapter). Set the three Spotify env vars in the Vercel project settings.
