@@ -22,7 +22,8 @@ export const home = {
     { label: 'experience', href: '/experience' },
     { label: 'github', href: 'https://github.com/snthegr8' },
     { label: 'linkedin', href: 'https://linkedin.com/in/somtonnalue' },
-    { label: 'email', href: 'mailto:snthegr8@icloud.com' },
+    { label: 'mail me :)', href: 'mailto:snthegr8@icloud.com' },
+    { label: 'voicenotes', href: 'https://bandlab.com/snthegr8' },
   ] satisfies HomeLink[],
   recentPostsLimit: 4,
 };
