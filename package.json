@@ -9,14 +9,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "spotify:token": "node scripts/spotify-token.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
+    "@astrojs/node": "^11.1.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.2.4",
     "astro-og-canvas": "^0.13.0",
-    "canvaskit-wasm": "^0.42.0"
+    "canvaskit-wasm": "^0.42.0",
+    "gsap": "^3.15.0"
   }
 }

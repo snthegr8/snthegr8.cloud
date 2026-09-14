@@ -1,0 +1,490 @@
+---
+import type { SpotifyStats } from '../lib/spotify';
+
+interface Props {
+	stats: SpotifyStats;
+}
+
+const { stats } = Astro.props;
+const yearLabel = String(stats.year).slice(2);
+---
+
+<section class="spotify" data-spotify aria-label="Spotify">
+	<div class="spotify-head">
+		<span class="eyebrow">spotify</span>
+	</div>
+
+	<div class="now" data-now-playing>
+		<div class="now-art" data-now-art aria-hidden="true">
+			<div class="art-fallback"></div>
+		</div>
+		<div class="now-meta">
+			<p class="now-label">
+				<span class="eq" data-eq aria-hidden="true">
+					<span></span><span></span><span></span>
+				</span>
+				<span data-now-status>currently listening</span>
+			</p>
+			<a class="now-title" data-now-title href="#" target="_blank" rel="noopener noreferrer">
+				—
+			</a>
+			<p class="now-artist" data-now-artist>not playing anything right now</p>
+			<div class="progress" data-progress hidden>
+				<div class="progress-bar" data-progress-bar></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="grid">
+		<div class="panel">
+			<p class="panel-label">top artists '{yearLabel}</p>
+			{
+				stats.artists.length > 0 ? (
+					<ol class="artists">
+						{stats.artists.map((artist, i) => (
+							<li>
+								<span class="rank">{i + 1}</span>
+								{artist.image ? (
+									<img src={artist.image} alt="" width="28" height="28" loading="lazy" />
+								) : (
+									<span class="thumb" aria-hidden="true" />
+								)}
+								<a href={artist.url} target="_blank" rel="noopener noreferrer">
+									{artist.name}
+								</a>
+							</li>
+						))}
+					</ol>
+				) : (
+					<p class="empty">waiting on spotify…</p>
+				)
+			}
+		</div>
+
+		<div class="panel-stack">
+			<div class="panel">
+				<p class="panel-label">top album</p>
+				{
+					stats.topAlbum ? (
+						<a class="media-row" href={stats.topAlbum.url} target="_blank" rel="noopener noreferrer">
+							{stats.topAlbum.image ? (
+								<img src={stats.topAlbum.image} alt="" width="48" height="48" loading="lazy" />
+							) : (
+								<span class="thumb lg" aria-hidden="true" />
+							)}
+							<span>
+								<span class="media-title">{stats.topAlbum.name}</span>
+								<span class="media-sub">{stats.topAlbum.artists}</span>
+							</span>
+						</a>
+					) : (
+						<p class="empty">waiting on spotify…</p>
+					)
+				}
+			</div>
+
+			<div class="panel">
+				<p class="panel-label">on repeat</p>
+				{
+					stats.onRepeat ? (
+						<a class="media-row" href={stats.onRepeat.url} target="_blank" rel="noopener noreferrer">
+							{stats.onRepeat.image ? (
+								<img src={stats.onRepeat.image} alt="" width="48" height="48" loading="lazy" />
+							) : (
+								<span class="thumb lg" aria-hidden="true" />
+							)}
+							<span>
+								<span class="media-title">{stats.onRepeat.name}</span>
+								<span class="media-sub">{stats.onRepeat.artists}</span>
+							</span>
+						</a>
+					) : (
+						<p class="empty">waiting on spotify…</p>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.spotify {
+		margin-top: 2.75rem;
+		padding-top: 1.75rem;
+		border-top: 1px solid color-mix(in srgb, var(--brown) 14%, transparent);
+	}
+
+	.spotify-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.eyebrow {
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.hint {
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
+	}
+
+	.now {
+		display: grid;
+		grid-template-columns: 64px minmax(0, 1fr);
+		gap: 1rem;
+		align-items: center;
+		margin-bottom: 1.75rem;
+	}
+
+	.now-art {
+		width: 64px;
+		aspect-ratio: 1;
+		border-radius: 6px;
+		overflow: hidden;
+		background: color-mix(in srgb, var(--peach) 35%, var(--cream));
+		position: relative;
+	}
+
+	.now-art :global(img),
+	.art-fallback {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+	}
+
+	.art-fallback {
+		background:
+			linear-gradient(
+				135deg,
+				color-mix(in srgb, var(--peach) 45%, transparent),
+				color-mix(in srgb, var(--brown) 12%, transparent)
+			);
+	}
+
+	.now-meta {
+		min-width: 0;
+	}
+
+	.now-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin: 0 0 0.35rem;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.eq {
+		display: inline-flex;
+		align-items: flex-end;
+		gap: 2px;
+		height: 10px;
+		opacity: 0.35;
+	}
+
+	.eq span {
+		width: 2px;
+		height: 40%;
+		background: var(--peach);
+		border-radius: 1px;
+	}
+
+	.eq.is-live {
+		opacity: 1;
+	}
+
+	.eq.is-live span {
+		animation: eq 0.9s ease-in-out infinite;
+	}
+
+	.eq.is-live span:nth-child(2) {
+		animation-delay: 0.15s;
+		height: 70%;
+	}
+
+	.eq.is-live span:nth-child(3) {
+		animation-delay: 0.3s;
+		height: 55%;
+	}
+
+	@keyframes eq {
+		0%,
+		100% {
+			transform: scaleY(0.45);
+		}
+		50% {
+			transform: scaleY(1);
+		}
+	}
+
+	.now-title {
+		display: block;
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--green);
+		text-decoration: none;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.now-title:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.now-artist {
+		margin: 0.2rem 0 0;
+		font-size: 0.875rem;
+		color: color-mix(in srgb, var(--brown) 70%, transparent);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.progress {
+		margin-top: 0.65rem;
+		height: 2px;
+		background: color-mix(in srgb, var(--brown) 12%, transparent);
+		border-radius: 999px;
+		overflow: hidden;
+	}
+
+	.progress-bar {
+		height: 100%;
+		width: 0%;
+		background: var(--peach);
+		border-radius: inherit;
+		transition: width 0.4s linear;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: 1.5rem 2rem;
+	}
+
+	.panel-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.panel-label {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		letter-spacing: 0.06em;
+		text-transform: lowercase;
+		color: color-mix(in srgb, var(--brown) 55%, transparent);
+	}
+
+	.artists {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+	}
+
+	.artists li {
+		display: grid;
+		grid-template-columns: 1.25rem 28px minmax(0, 1fr);
+		gap: 0.65rem;
+		align-items: center;
+	}
+
+	.artists img,
+	.thumb {
+		width: 28px;
+		height: 28px;
+		border-radius: 999px;
+		object-fit: cover;
+		background: color-mix(in srgb, var(--peach) 40%, var(--cream));
+	}
+
+	.thumb.lg {
+		width: 48px;
+		height: 48px;
+		border-radius: 6px;
+	}
+
+	.rank {
+		font-size: 0.75rem;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.artists a {
+		min-width: 0;
+		color: var(--green);
+		text-decoration: none;
+		font-size: 0.9rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.artists a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.media-row {
+		display: grid;
+		grid-template-columns: 48px minmax(0, 1fr);
+		gap: 0.75rem;
+		align-items: center;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.media-row img {
+		width: 48px;
+		height: 48px;
+		border-radius: 6px;
+		object-fit: cover;
+	}
+
+	.media-title,
+	.media-sub {
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.media-title {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--green);
+	}
+
+	.media-sub {
+		margin-top: 0.15rem;
+		font-size: 0.8rem;
+		color: color-mix(in srgb, var(--brown) 65%, transparent);
+	}
+
+	.media-row:hover .media-title {
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.empty {
+		margin: 0;
+		font-size: 0.85rem;
+		color: color-mix(in srgb, var(--brown) 45%, transparent);
+	}
+
+	@media (max-width: 640px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.eq.is-live span {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	type NowPlayingResponse = {
+		configured?: boolean;
+		isPlaying?: boolean;
+		progressMs?: number | null;
+		durationMs?: number | null;
+		track?: {
+			name: string;
+			artists: string;
+			url: string;
+			image: string | null;
+		} | null;
+	};
+
+	const root = document.querySelector<HTMLElement>('[data-spotify]');
+	if (root) {
+		const status = root.querySelector<HTMLElement>('[data-now-status]');
+		const title = root.querySelector<HTMLAnchorElement>('[data-now-title]');
+		const artist = root.querySelector<HTMLElement>('[data-now-artist]');
+		const art = root.querySelector<HTMLElement>('[data-now-art]');
+		const eq = root.querySelector<HTMLElement>('[data-eq]');
+		const progress = root.querySelector<HTMLElement>('[data-progress]');
+		const progressBar = root.querySelector<HTMLElement>('[data-progress-bar]');
+
+		const render = (data: NowPlayingResponse) => {
+			const playing = Boolean(data.isPlaying && data.track);
+			const track = data.track;
+
+			if (eq) eq.classList.toggle('is-live', playing);
+			if (status) status.textContent = playing ? 'currently listening' : 'last checked in';
+
+			if (title) {
+				title.textContent = track?.name ?? 'nothing playing';
+				title.href = track?.url || '#';
+				title.style.pointerEvents = track?.url ? 'auto' : 'none';
+			}
+
+			if (artist) {
+				artist.textContent = track?.artists ?? '...';
+			}
+
+			if (art) {
+				const existing = art.querySelector('img');
+				if (track?.image) {
+					if (existing) {
+						existing.src = track.image;
+					} else {
+						const img = document.createElement('img');
+						img.src = track.image;
+						img.alt = '';
+						img.width = 64;
+						img.height = 64;
+						art.replaceChildren(img);
+					}
+				} else if (!art.querySelector('.art-fallback')) {
+					const fallback = document.createElement('div');
+					fallback.className = 'art-fallback';
+					art.replaceChildren(fallback);
+				}
+			}
+
+			if (progress && progressBar) {
+				const canShow =
+					playing &&
+					typeof data.progressMs === 'number' &&
+					typeof data.durationMs === 'number' &&
+					data.durationMs > 0;
+				progress.hidden = !canShow;
+				if (canShow && data.progressMs != null && data.durationMs != null) {
+					progressBar.style.width = `${Math.min(100, (data.progressMs / data.durationMs) * 100)}%`;
+				}
+			}
+		};
+
+		const poll = async () => {
+			try {
+				const res = await fetch('/api/spotify/now-playing');
+				const data = (await res.json()) as NowPlayingResponse;
+				render(data);
+			} catch {
+				/* keep last good state */
+			}
+		};
+
+		void poll();
+		window.setInterval(poll, 20_000);
+	}
+</script>

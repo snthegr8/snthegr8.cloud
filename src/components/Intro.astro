@@ -1,0 +1,392 @@
+---
+import { home } from '../data/home';
+import { getSpotifyStats } from '../lib/spotify';
+import Spotify from './Spotify.astro';
+
+const stats = await getSpotifyStats();
+---
+
+<section class="intro" data-intro aria-label="Introduction">
+	<script is:inline>
+		(() => {
+			const intro = document.currentScript?.parentElement;
+			if (intro && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				intro.setAttribute('data-animating', 'true');
+			}
+		})();
+	</script>
+
+	<div class="hero">
+		<div class="portrait-wrap" data-portrait-wrap>
+			<div class="portrait" data-portrait>
+				{
+					home.image.src ? (
+						<img src={home.image.src} alt={home.image.alt} width="88" height="88" />
+					) : (
+						<div class="portrait-placeholder" aria-hidden="true" />
+					)
+				}
+				<span class="portrait-ring" aria-hidden="true" data-portrait-ring></span>
+			</div>
+		</div>
+
+		<div class="bio">
+			<p class="lead" data-reveal data-reveal-type="line">
+				{home.lead.prefix}{' '}
+				<a href={home.lead.workplace.href}>{home.lead.workplace.label}</a>
+				{home.lead.suffix}
+			</p>
+
+			<p class="aside" data-reveal data-reveal-type="line">{home.aside}</p>
+
+			<nav class="links" aria-label="Contact and profiles">
+				{
+					home.links.map((link) => (
+						<a href={link.href} data-magnetic>
+							<span class="link-label" data-magnetic-label>{link.label}</span>
+							<span class="link-line" aria-hidden="true"></span>
+						</a>
+					))
+				}
+			</nav>
+		</div>
+	</div>
+
+	<div class="spotify-slot" data-spotify-slot>
+		<Spotify stats={stats} />
+	</div>
+</section>
+
+<style>
+	.intro {
+		--intro-ease: cubic-bezier(0.22, 1, 0.36, 1);
+		margin-bottom: 4rem;
+	}
+
+	.hero {
+		display: grid;
+		grid-template-columns: 88px minmax(0, 1fr);
+		gap: 1.75rem 2rem;
+		align-items: start;
+	}
+
+	.portrait-wrap {
+		position: relative;
+		width: 88px;
+		aspect-ratio: 1;
+		perspective: 640px;
+	}
+
+	.portrait {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		border-radius: 6px;
+		will-change: transform;
+		transform-style: preserve-3d;
+	}
+
+	.portrait img,
+	.portrait-placeholder {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		border-radius: 6px;
+		position: relative;
+		z-index: 1;
+	}
+
+	.portrait img {
+		cursor: zoom-in;
+	}
+
+	.portrait-placeholder {
+		background: color-mix(in srgb, var(--peach) 70%, var(--cream));
+		border: 1px solid color-mix(in srgb, var(--brown) 15%, transparent);
+	}
+
+	.portrait-ring {
+		position: absolute;
+		inset: -5px;
+		border: 1px solid color-mix(in srgb, var(--peach) 55%, transparent);
+		border-radius: 9px;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.bio {
+		min-width: 0;
+		padding-top: 0.15rem;
+	}
+
+	.lead,
+	.aside {
+		margin: 0;
+		max-width: 52ch;
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: color-mix(in srgb, var(--brown) 88%, transparent);
+	}
+
+	.lead {
+		margin-bottom: 0.85rem;
+		color: var(--green);
+		font-weight: 500;
+	}
+
+	.lead a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+		text-decoration-thickness: 1px;
+	}
+
+	.lead a:hover {
+		color: var(--peach);
+	}
+
+	.aside {
+		margin-bottom: 1.5rem;
+	}
+
+	.spotify-slot {
+		will-change: transform, opacity;
+	}
+
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.35rem 1.25rem;
+	}
+
+	.links a {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		padding: 0.3rem 0;
+		font-size: 0.875rem;
+		color: var(--green);
+		text-decoration: none;
+		text-transform: lowercase;
+	}
+
+	.links a:hover {
+		color: var(--brown);
+	}
+
+	.link-label {
+		display: inline-block;
+		will-change: transform;
+	}
+
+	.link-line {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0.1rem;
+		height: 1px;
+		background: currentColor;
+		transform: scaleX(0);
+		transform-origin: left center;
+		opacity: 0.7;
+		pointer-events: none;
+	}
+
+	.intro[data-animating]:not(.is-ready) [data-reveal],
+	.intro[data-animating]:not(.is-ready) [data-portrait],
+	.intro[data-animating]:not(.is-ready) [data-magnetic],
+	.intro[data-animating]:not(.is-ready) [data-spotify-slot] {
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.intro[data-animating]:not(.is-ready) [data-reveal],
+		.intro[data-animating]:not(.is-ready) [data-portrait],
+		.intro[data-animating]:not(.is-ready) [data-magnetic],
+		.intro[data-animating]:not(.is-ready) [data-spotify-slot] {
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.portrait-wrap {
+			width: min(104px, 34vw);
+		}
+
+		.lead,
+		.aside {
+			font-size: 1rem;
+		}
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const root = document.querySelector<HTMLElement>('[data-intro]');
+	if (!root) {
+		/* no intro */
+	} else {
+		const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
+		const splitLine = (el: HTMLElement) => {
+			const html = el.innerHTML;
+			el.setAttribute('data-original-html', html);
+			const text = el.textContent?.trim() ?? '';
+			el.setAttribute('aria-label', text);
+
+			const wrap = document.createElement('span');
+			wrap.style.cssText = 'display:block;overflow:hidden;';
+
+			const inner = document.createElement('span');
+			inner.className = 'line';
+			inner.style.cssText = 'display:block;will-change:transform';
+			inner.innerHTML = html;
+			wrap.replaceChildren(inner);
+			el.replaceChildren(wrap);
+
+			return [inner];
+		};
+
+		const wrap = root.querySelector<HTMLElement>('[data-portrait-wrap]');
+		const portrait = root.querySelector<HTMLElement>('[data-portrait]');
+		const ring = root.querySelector<HTMLElement>('[data-portrait-ring]');
+		const spotifySlot = root.querySelector<HTMLElement>('[data-spotify-slot]');
+		const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-magnetic]'));
+		const revealEls = Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
+
+		if (reduceMotion) {
+			root.classList.add('is-ready');
+		} else {
+			const failsafe = window.setTimeout(() => root.classList.add('is-ready'), 1800);
+			const lineTargets: HTMLElement[] = [];
+			revealEls.forEach((el) => lineTargets.push(...splitLine(el)));
+
+			gsap.set([portrait, ...links, spotifySlot], { opacity: 0, y: 10 });
+			gsap.set(lineTargets, { yPercent: 110 });
+			gsap.set(revealEls, { opacity: 1 });
+			gsap.set(ring, { opacity: 0, scale: 0.92 });
+
+			const tl = gsap.timeline({
+				defaults: { ease: 'power3.out' },
+				onStart: () => {
+					window.clearTimeout(failsafe);
+					root.classList.add('is-ready');
+				},
+			});
+
+			tl.to(portrait, { opacity: 1, y: 0, duration: 0.95, clearProps: 'y' }, 0)
+				.fromTo(
+					portrait,
+					{ scale: 0.9, rotate: -2.5 },
+					{ scale: 1, rotate: 0, duration: 1 },
+					0,
+				)
+				.to(ring, { opacity: 1, scale: 1, duration: 0.75 }, 0.18)
+				.to(lineTargets, { yPercent: 0, duration: 0.9, stagger: 0.1 }, 0.2)
+				.to(links, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05 }, 0.55)
+				.to(spotifySlot, { opacity: 1, y: 0, duration: 0.7 }, 0.7);
+
+			if (wrap) {
+				gsap.to(wrap, {
+					y: -4,
+					duration: 3.4,
+					ease: 'sine.inOut',
+					yoyo: true,
+					repeat: -1,
+					delay: 1.2,
+				});
+			}
+		}
+
+		if (portrait && wrap && !reduceMotion) {
+			wrap.addEventListener('pointermove', (e) => {
+				const rect = wrap.getBoundingClientRect();
+				const nx = clamp((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2), -1, 1);
+				const ny = clamp((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2), -1, 1);
+
+				gsap.to(portrait, {
+					x: nx * 7,
+					rotateY: nx * 9,
+					rotateX: -ny * 9,
+					duration: 0.5,
+					ease: 'power3.out',
+					overwrite: 'auto',
+				});
+
+				if (ring) {
+					gsap.to(ring, {
+						x: nx * 3,
+						y: ny * 3,
+						duration: 0.5,
+						ease: 'power3.out',
+						overwrite: 'auto',
+					});
+				}
+			});
+
+			wrap.addEventListener('pointerleave', () => {
+				gsap.to(portrait, {
+					x: 0,
+					rotateX: 0,
+					rotateY: 0,
+					duration: 0.75,
+					ease: 'power3.out',
+					overwrite: 'auto',
+				});
+				if (ring) {
+					gsap.to(ring, { x: 0, y: 0, duration: 0.75, ease: 'power3.out', overwrite: 'auto' });
+				}
+			});
+		}
+
+		links.forEach((link) => {
+			const label = link.querySelector<HTMLElement>('[data-magnetic-label]');
+			const line = link.querySelector<HTMLElement>('.link-line');
+			if (!label) return;
+
+			link.addEventListener('pointermove', (e) => {
+				if (reduceMotion) return;
+				const rect = link.getBoundingClientRect();
+				const nx = clamp((e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2), -1, 1);
+				const ny = clamp((e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2), -1, 1);
+				gsap.to(label, {
+					x: nx * 5,
+					y: ny * 4,
+					duration: 0.4,
+					ease: 'power3.out',
+					overwrite: 'auto',
+				});
+			});
+
+			link.addEventListener('pointerenter', () => {
+				if (reduceMotion || !line) return;
+				gsap.fromTo(
+					line,
+					{ scaleX: 0, transformOrigin: 'left center' },
+					{ scaleX: 1, duration: 0.42, ease: 'power3.out', overwrite: 'auto' },
+				);
+			});
+
+			link.addEventListener('pointerleave', () => {
+				gsap.to(label, { x: 0, y: 0, duration: 0.55, ease: 'power3.out', overwrite: 'auto' });
+				if (reduceMotion || !line) return;
+				gsap.to(line, {
+					scaleX: 0,
+					transformOrigin: 'right center',
+					duration: 0.32,
+					ease: 'power2.in',
+					overwrite: 'auto',
+				});
+			});
+		});
+	}
+</script>

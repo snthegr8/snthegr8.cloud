@@ -16,7 +16,7 @@ import HeaderLink from './HeaderLink.astro';
 
 <style>
 	header {
-		padding: 0;
+		padding: 1.75rem 0 0.5rem;
 		background: transparent;
 	}
 
@@ -27,7 +27,13 @@ import HeaderLink from './HeaderLink.astro';
 		width: 720px;
 		max-width: calc(100% - 2rem);
 		margin: 0 auto;
-		padding: 0 1rem;
+		padding: 0.75rem 1rem;
+	}
+
+	@media (max-width: 720px) {
+		header {
+			padding: 1.25rem 0 0.25rem;
+		}
 	}
 
 	.site-title {

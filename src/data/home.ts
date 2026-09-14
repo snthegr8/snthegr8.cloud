@@ -8,19 +8,21 @@ export const home = {
     src: '/me.png',
     alt: 'Somtochukwu Nnalue',
   },
-  paragraphs: [
-    "Hi there, greetings to you!",
-    "I'm Somtochukwu Nnalue, Leroy to most people, a programmer based in Lagos, Nigeria.",
-    "I enjoy software engineering, it makes me tick;",
-    "When I'm not in front of Kleos, my MacBook, you'd probably find me on my bicycle riding without a worry in mind, or trying to finish up The Mentalist series.",
-    "I don't have a handful of friends, so if we share similar interests, or you have a tip for me, want to hang out, or have something valuable to build, feel free to email me below 👇"],
+  lead: {
+    prefix: 'building @',
+    workplace: {
+      label: 'alvinn.app',
+      href: 'https://alvinn.app',
+    },
+    suffix: '.',
+  },
+  aside:
+    'when i am not shipping, i am probably riding my bicycle, watching the mentalist, surfing beats on youtube or studying economics.',
   links: [
-    { label: 'Experience', href: '/experience' },
-    { label: 'Github', href: 'https://github.com/snthegr8' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/somtonnalue' },
-    // { label: 'Tools', href: 'https://linkedin.com/in/somtonnalue' },
-    // { label: 'Photography', href: '/photography' },
-    { label: 'Email Me', href: 'mailto:snthegr8@icloud.com' },
+    { label: 'experience', href: '/experience' },
+    { label: 'github', href: 'https://github.com/snthegr8' },
+    { label: 'linkedin', href: 'https://linkedin.com/in/somtonnalue' },
+    { label: 'email', href: 'mailto:snthegr8@icloud.com' },
   ] satisfies HomeLink[],
   recentPostsLimit: 4,
 };
