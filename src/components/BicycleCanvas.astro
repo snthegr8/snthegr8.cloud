@@ -1,0 +1,43 @@
+<canvas
+	class="bicycle-canvas"
+	data-bicycle-canvas
+	aria-hidden="true"
+></canvas>
+
+<style is:global>
+	.bicycle-canvas {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		pointer-events: none;
+		opacity: 0.42;
+	}
+
+	body > header,
+	body > main,
+	body > footer {
+		position: relative;
+		z-index: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bicycle-canvas {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const canvas = document.querySelector<HTMLCanvasElement>('[data-bicycle-canvas]');
+	if (canvas && !(canvas as HTMLCanvasElement & { __bikeMounted?: boolean }).__bikeMounted) {
+		(canvas as HTMLCanvasElement & { __bikeMounted?: boolean }).__bikeMounted = true;
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (!reduceMotion) {
+			void import('../lib/bicycle/scene').then(({ mountBicycleScene }) => {
+				mountBicycleScene(canvas);
+			});
+		}
+	}
+</script>

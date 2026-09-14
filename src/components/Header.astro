@@ -1,7 +1,14 @@
 ---
+import BicycleCanvas from './BicycleCanvas.astro';
 import HeaderLink from './HeaderLink.astro';
+import Potcake from './Potcake.astro';
+
+/** Individual posts only — keep bike on /blog index. */
+const isBlogPost = /^\/blog\/[^/]+/.test(Astro.url.pathname);
 ---
 
+{!isBlogPost && <BicycleCanvas />}
+<Potcake />
 <header>
 	<nav>
 		<a href="/" class="site-title">sn</a>
